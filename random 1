@@ -1,8 +1,9 @@
 import pandas as pd
-import random
+import numpy as np
 
 # prendiamo i file Excel 
 hotels = pd.read_excel("/Users/raulspano/Desktop/progetto hotel/hotels.xlsx")
+print(hotels.count())
 ospiti = pd.read_excel('/Users/raulspano/Desktop/progetto hotel/guests.xlsx')
 preferenze = pd.read_excel('/Users/raulspano/Desktop/progetto hotel/preferences.xlsx')
 
@@ -31,7 +32,7 @@ for _, guest_row in ospiti.iterrows():
     hotels_preferiti=preferenze_ospite[preferenze_ospite['hotel'].isin(hotels[hotels['stanze_disponibili']>0]['hotel'])]
     if not hotels_preferiti.empty:
         ## se ci sono preferenze disponibili selezionarne una casualmente
-        hotel_selezionato= hotels_preferiti.sample().iloc[0]['hotel']
+        hotel_selezionato= np.random.choice(hotels_preferiti['hotel'])
         ospiti_soddisfatti += 1 ##vuol dire che l'ospite ha ottenuto un hotel preferito
     else:
         ## se non ci sono preferenze valide seleziona un hotel a caso tra quelli con stanze disponibili
@@ -40,7 +41,7 @@ for _, guest_row in ospiti.iterrows():
             print('Non ci sono hotel disponibili')
             continue ##se non ci sono hotel disponibili passa al prossimo ospite
         ##selezioniamo casualmente un hotel disponibile
-        hotel_selezionato=hotels_disponibili.sample().iloc[0]['hotel']
+        hotel_selezionato= np.random.choice(hotels_disponibili['hotel'])
     
     ##recuperare il prezzo dell'hotel selezionato
     prezzo_hotel= hotels[hotels['hotel']==hotel_selezionato].iloc[0]
