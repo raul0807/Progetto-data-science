@@ -7,7 +7,6 @@ hotel_ex = pd.read_excel("/Users/raulspano/Desktop/progetto hotel/hotels.xlsx")
 guest_ex = pd.read_excel('/Users/raulspano/Desktop/progetto hotel/guests.xlsx')
 preferences_ex = pd.read_excel('/Users/raulspano/Desktop/progetto hotel/preferences.xlsx')
 
-
 ##creiamo una colonna che rappresenta le stanze disponibili
 hotel_ex['stanze_disponibili'] = hotel_ex['rooms'].copy()
 
