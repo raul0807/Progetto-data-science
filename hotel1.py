@@ -3,16 +3,16 @@ import numpy as np
 import matplotlib.pyplot as plt 
 
 # prendiamo i file Excel 
-hotels = pd.read_excel("/Users/raulspano/Desktop/progetto hotel/hotels.xlsx")
-ospiti = pd.read_excel('/Users/raulspano/Desktop/progetto hotel/guests.xlsx')
-preferenze = pd.read_excel('/Users/raulspano/Desktop/progetto hotel/preferences.xlsx')
+hotel_ex = pd.read_excel("/Users/raulspano/Desktop/progetto hotel/hotels.xlsx")
+guest_ex = pd.read_excel('/Users/raulspano/Desktop/progetto hotel/guests.xlsx')
+preferences_ex = pd.read_excel('/Users/raulspano/Desktop/progetto hotel/preferences.xlsx')
 
 
 ##creiamo una colonna che rappresenta le stanze disponibili
-hotels['stanze_disponibili'] = hotels['rooms'].copy()
+hotel_ex['stanze_disponibili'] = hotel_ex['rooms'].copy()
 
 ##creiamo un dizionario per tracciare i guadagni per ogni hotel
-guadagni_hotel={hotel: 0 for hotel in hotels['hotel']}
+guadagni_hotel={hotel: 0 for hotel in hotel_ex['hotel']}
 
 ##variabili per le statistiche
 ospiti_allocati=0
@@ -23,20 +23,20 @@ ospiti_soddisfatti=0
 ##creiamo una lista in cui possiamo aggiungere le allocazioni
 allocazioni=[]
 
-for _, guest_row in ospiti.iterrows():
+for _, guest_row in guest_ex.iterrows():
     guest=guest_row['guest']
     discount=guest_row['discount']
     ##dobbiamo prendere in considerazione le preferenze dell'ospite
-    preferenze_ospite=preferenze[preferenze['guest']== guest]
+    preferenze_ospite=preferences_ex[preferences_ex['guest']== guest]
     ##dobbiamo trovare stanze disponibili nelle preferenze del cliente
-    hotels_preferiti=preferenze_ospite[preferenze_ospite['hotel'].isin(hotels[hotels['stanze_disponibili']>0]['hotel'])]
+    hotels_preferiti=preferenze_ospite[preferenze_ospite['hotel'].isin(hotel_ex[hotel_ex['stanze_disponibili']>0]['hotel'])]
     if not hotels_preferiti.empty:
         ## se ci sono preferenze disponibili selezionarne una casualmente
         hotel_selezionato= np.random.choice(hotels_preferiti['hotel'])
         ospiti_soddisfatti += 1 ##vuol dire che l'ospite ha ottenuto un hotel preferito
     else:
         ## se non ci sono preferenze valide seleziona un hotel a caso tra quelli con stanze disponibili
-        hotels_disponibili=hotels[hotels['stanze_disponibili']>0]
+        hotels_disponibili=hotel_ex[hotel_ex['stanze_disponibili']>0]
         if hotels_disponibili.empty:
             print('Non ci sono hotel disponibili')
             continue ##se non ci sono hotel disponibili passa al prossimo ospite
@@ -44,7 +44,7 @@ for _, guest_row in ospiti.iterrows():
         hotel_selezionato= np.random.choice(hotels_disponibili['hotel'])
     
     ##recuperare il prezzo dell'hotel selezionato
-    prezzo_hotel= hotels[hotels['hotel']==hotel_selezionato].iloc[0]
+    prezzo_hotel= hotel_ex[hotel_ex['hotel']==hotel_selezionato].iloc[0]
     price=prezzo_hotel['price']
     
     #calcoliamo lo sconto
@@ -58,8 +58,8 @@ for _, guest_row in ospiti.iterrows():
     })
     
     ##dobbiamo ovviamente ridurre il numero di stanze disponibili nell'hotel
-    indice_hotel=hotels[hotels['hotel']==hotel_selezionato].index
-    hotels.loc[indice_hotel, 'stanze_disponibili'] -=1
+    indice_hotel=hotel_ex[hotel_ex['hotel']==hotel_selezionato].index
+    hotel_ex.loc[indice_hotel, 'stanze_disponibili'] -=1
     
     ##dobbiamo aggiornare le statistiche
     ospiti_allocati += 1
