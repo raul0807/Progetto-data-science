@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt 
 
 # prendiamo i file Excel 
 hotels = pd.read_excel("/Users/raulspano/Desktop/progetto hotel/hotels.xlsx")
@@ -80,3 +81,10 @@ print(f'Ospiti soddisfatti: {ospiti_soddisfatti}')
 guadagni_df= pd.DataFrame(list(guadagni_hotel.items()), columns=['Hotel', 'Guadagno Totale'])
 print('\nGuadagni totali di ogni hotel:')
 print(guadagni_df)
+
+plt.figure(figsize=(6, 4))
+plt.bar(['Ospiti Soddisfatti', 'Ospiti Non Soddisfatti'], [ospiti_soddisfatti, ospiti_allocati - ospiti_soddisfatti], color=['green', 'red'])
+plt.ylabel('Numero di Ospiti')
+plt.title('Soddisfazione degli Ospiti')
+plt.show()
+##qui utilizzo un grafico per mostrare quanti ospiti sono soddisfatti rispetto a quelli che non lo sono
