@@ -1,9 +1,8 @@
 import pandas as pd
 
 ## Carico i file excel necessari
-hotel_ex= pd.read_excel('/Users/raulspano/Desktop/progetto hotel/hotels.xlsx')
-guest_ex= pd.read_excel('/Users/raulspano/Desktop/progetto hotel/guests.xlsx')
-preferences_ex= pd.read_excel('/Users/raulspano/Desktop/progetto hotel/preferences.xlsx')
+from modu import carica_file
+hotel_ex, guest_ex, preferences_ex = carica_file()
 
 ## creo una colonna che rappresenti le stanze disponibili
 hotel_ex['stanze_disponibili']= hotel_ex['rooms'].copy()
@@ -11,14 +10,8 @@ hotel_ex['stanze_disponibili']= hotel_ex['rooms'].copy()
 ##creo un dizionario per tracciare i guadagno per ogni hotel
 guadagni_hotel= {hotel: 0 for hotel in hotel_ex['hotel']}
 
-##creo le variabile per le statistiche che vogliamo ottenere
-ospiti_allocati = 0
-stanze_occupate = 0
-hotel_occupati = set()
-ospiti_soddisfatti = 0
-
-## creiamo una lista in cui aggiungere le allocazioni, non un 'tuples' perchè non potremmo aggiungere altro ne tanto meno un dizionario
-allocazioni=[]
+from modu import stats
+ospiti_allocati, stanze_occupate, hotel_occupati, ospiti_soddisfatti, allocazioni = stats()
 
 ## loop sugli ospiti ordinati dal primo all'ultimo
 for _, guest_row in guest_ex.iterrows():
@@ -75,7 +68,7 @@ for _, guest_row in guest_ex.iterrows():
         break
 
 ##infine creo un dataframe dalle allocazioni
-allocazioni_df_2=pd.DataFrame
+allocazioni_df_2=pd.DataFrame(allocazioni)
 
 ##risultato finale
 numero_hotel_occupati= len(hotel_occupati)

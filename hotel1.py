@@ -2,10 +2,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt 
 
-# prendiamo i file Excel 
-hotel_ex = pd.read_excel("/Users/raulspano/Desktop/progetto hotel/hotels.xlsx")
-guest_ex = pd.read_excel('/Users/raulspano/Desktop/progetto hotel/guests.xlsx')
-preferences_ex = pd.read_excel('/Users/raulspano/Desktop/progetto hotel/preferences.xlsx')
+from modu import carica_file
+hotel_ex, guest_ex, preferences_ex = carica_file()
 
 ##creiamo una colonna che rappresenta le stanze disponibili
 hotel_ex['stanze_disponibili'] = hotel_ex['rooms'].copy()
@@ -13,14 +11,8 @@ hotel_ex['stanze_disponibili'] = hotel_ex['rooms'].copy()
 ##creiamo un dizionario per tracciare i guadagni per ogni hotel
 guadagni_hotel={hotel: 0 for hotel in hotel_ex['hotel']}
 
-##variabili per le statistiche
-ospiti_allocati=0
-stanze_occupate=0
-hotel_occupati=set()
-ospiti_soddisfatti=0
-
-##creiamo una lista in cui possiamo aggiungere le allocazioni
-allocazioni=[]
+from modu import stats
+ospiti_allocati, stanze_occupate, hotel_occupati, ospiti_soddisfatti, allocazioni = stats()
 
 for _, guest_row in guest_ex.iterrows():
     guest=guest_row['guest']
@@ -80,6 +72,9 @@ print(f'Ospiti soddisfatti: {ospiti_soddisfatti}')
 guadagni_df= pd.DataFrame(list(guadagni_hotel.items()), columns=['Hotel', 'Guadagno Totale'])
 print('\nGuadagni totali di ogni hotel:')
 print(guadagni_df)
+
+print('\nAllocazioni degli ospiti:')
+print(allocazioni_df)
 
 plt.figure(figsize=(6, 4))
 plt.bar(['Ospiti Soddisfatti', 'Ospiti Non Soddisfatti'], [ospiti_soddisfatti, ospiti_allocati - ospiti_soddisfatti], color=['green', 'red'])
