@@ -75,11 +75,13 @@ print(guadagni_df_4)
 print('\nAllocazioni degli ospiti:')
 print(allocazioni_df_4)
 
-labels = ['Ospiti Soddisfatti', 'Ospiti Non Soddisfatti']
+labels = ['Ospiti soddisfatti', 'Ospiti non soddisfatti']
 sizes = [ospiti_soddisfatti, ospiti_allocati-ospiti_soddisfatti]
+if sizes[1] == 0:
+    sizes[1] = 0.1
 colors = ['green', 'red']
-plt.figure(figsize=(7, 7))
-plt.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=90)
+plt.figure(figsize=(4, 4))
+plt.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=40)
 plt.title('Soddisfazione degli Ospiti', fontsize=14)
-plt.axis('equal')  
+plt.axis('equal')  # Assicura che il grafico sia circolare
 plt.show()
