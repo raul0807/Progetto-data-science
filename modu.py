@@ -1,4 +1,5 @@
 import pandas as pd
+import matplotlib.pyplot as plt 
 
 def carica_file():
     hotel_ex = pd.read_excel("/Users/raulspano/Desktop/progetto hotel/hotels.xlsx")

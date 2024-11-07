@@ -1,4 +1,6 @@
 import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
 
 from modu import carica_file
 hotel_ex, guest_ex, preferences_ex = carica_file()
@@ -72,3 +74,12 @@ print(guadagni_df_4)
 ##Allocazioni finali
 print('\nAllocazioni degli ospiti:')
 print(allocazioni_df_4)
+
+labels = ['Ospiti Soddisfatti', 'Ospiti Non Soddisfatti']
+sizes = [ospiti_soddisfatti, ospiti_allocati-ospiti_soddisfatti]
+colors = ['green', 'red']
+plt.figure(figsize=(7, 7))
+plt.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=90)
+plt.title('Soddisfazione degli Ospiti', fontsize=14)
+plt.axis('equal')  
+plt.show()

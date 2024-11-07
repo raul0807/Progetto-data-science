@@ -76,9 +76,12 @@ print(guadagni_df)
 print('\nAllocazioni degli ospiti:')
 print(allocazioni_df)
 
-plt.figure(figsize=(6, 4))
-plt.bar(['Ospiti Soddisfatti', 'Ospiti Non Soddisfatti'], [ospiti_soddisfatti, ospiti_allocati - ospiti_soddisfatti], color=['green', 'red'])
-plt.ylabel('Numero di Ospiti')
-plt.title('Soddisfazione degli Ospiti')
+labels = ['Ospiti Soddisfatti', 'Ospiti Non Soddisfatti']
+sizes = [ospiti_soddisfatti, ospiti_allocati-ospiti_soddisfatti]
+colors = ['green', 'red']
+plt.figure(figsize=(7, 7))
+plt.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=90)
+plt.title('Soddisfazione degli Ospiti', fontsize=14)
+plt.axis('equal')  
 plt.show()
 ##qui utilizzo un grafico per mostrare quanti ospiti sono soddisfatti rispetto a quelli che non lo sono

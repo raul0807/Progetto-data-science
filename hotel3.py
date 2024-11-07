@@ -1,4 +1,6 @@
 import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
 
 from modu import carica_file
 hotel_ex, guest_ex, preferences_ex = carica_file()
@@ -33,7 +35,8 @@ for _, guest_row in guest_ex.iterrows():
         hotels_preferiti=hotels_preferiti.merge(hotel_ex[['hotel', 'price']], on='hotel').sort_values(by='price')
         ##seleziono il primo hotel con disponibilità in base al meno costoso
         hotel_selezionato=hotels_preferiti.iloc[0]['hotel']
-        ospiti_soddisfatti += 1
+        if hotel_selezionato in preferenze_ospite['hotel'].values:
+            ospiti_soddisfatti += 1
     else:
         ##se non ci sono preferenze valide skippiamo il cliente e non viene allocato
         continue
@@ -69,6 +72,7 @@ numero_hotel_occupati= len(hotel_occupati)
 print(f'Nuero di ospiti che hanno ottenuto una camera: {ospiti_allocati}')
 print(f'Numero di stanze occupate: {stanze_occupate}')
 print(f'Numero di hotel occupati: {numero_hotel_occupati}')
+print(f'Numero di ospiti soddisfatti: {ospiti_soddisfatti}')
 
 guadagni_df_3=pd.DataFrame(list(guadagni_hotel.items()), columns=['Hotel', 'Guadagno Totale'])
 print('\nGuadagni totali di ogni hotel:')
@@ -76,3 +80,12 @@ print(guadagni_df_3)
 
 print('\nAllocazioni degli ospiti:')
 print(allocazioni_df_3)
+
+labels = ['Ospiti Soddisfatti', 'Ospiti Non Soddisfatti']
+sizes = [ospiti_soddisfatti, ospiti_allocati-ospiti_soddisfatti]
+colors = ['green', 'red']
+plt.figure(figsize=(7, 7))
+plt.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=90)
+plt.title('Soddisfazione degli Ospiti', fontsize=14)
+plt.axis('equal')  
+plt.show()
