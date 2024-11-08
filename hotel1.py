@@ -1,78 +1,72 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
 
+# importo i file excel necessari
 from modu import carica_file
 hotel_ex, guest_ex, preferences_ex = carica_file()
 
-##creiamo una colonna che rappresenta le stanze disponibili
+# creo una nuova colonna e un dizionario
 hotel_ex['stanze_disponibili'] = hotel_ex['rooms'].copy()
+guadagni_hotel = {hotel: 0 for hotel in hotel_ex['hotel']}
 
-##creiamo un dizionario per tracciare i guadagni per ogni hotel
-guadagni_hotel={hotel: 0 for hotel in hotel_ex['hotel']}
-
+# importo le stas 
 from modu import stats
 ospiti_allocati, stanze_occupate, hotel_occupati, ospiti_soddisfatti, allocazioni = stats()
 
+# itero su ogni riga saltando la prima che ha i titoli delle colonne
 for _, guest_row in guest_ex.iterrows():
-    guest=guest_row['guest']
-    discount=guest_row['discount']
-    ##dobbiamo prendere in considerazione le preferenze dell'ospite
-    preferenze_ospite=preferences_ex[preferences_ex['guest']== guest]
-    ##dobbiamo trovare stanze disponibili nelle preferenze del cliente
-    hotels_preferiti=preferenze_ospite[preferenze_ospite['hotel'].isin(hotel_ex[hotel_ex['stanze_disponibili']>0]['hotel'])]
-    if not hotels_preferiti.empty:
-        ## se ci sono preferenze disponibili selezionarne una casualmente
-        hotel_selezionato= np.random.choice(hotels_preferiti['hotel'])
-        ospiti_soddisfatti += 1 ##vuol dire che l'ospite ha ottenuto un hotel preferito
-    else:
-        ## se non ci sono preferenze valide seleziona un hotel a caso tra quelli con stanze disponibili
-        hotels_disponibili=hotel_ex[hotel_ex['stanze_disponibili']>0]
-        if hotels_disponibili.empty:
-            print('Non ci sono hotel disponibili')
-            continue ##se non ci sono hotel disponibili passa al prossimo ospite
-        ##selezioniamo casualmente un hotel disponibile
-        hotel_selezionato= np.random.choice(hotels_disponibili['hotel'])
+    guest = guest_row['guest']
+    discount = guest_row['discount']
     
-    ##recuperare il prezzo dell'hotel selezionato
-    prezzo_hotel= hotel_ex[hotel_ex['hotel']==hotel_selezionato].iloc[0]
-    price=prezzo_hotel['price']
+    # controllo gli hotel con stanze disponibili
+    hotels_disponibili = hotel_ex[hotel_ex['stanze_disponibili'] > 0]
+    if hotels_disponibili.empty:
+        print('Non ci sono hotel disponibili')
+        continue
+
+    # scelgo un hotel random tra quelli disponibili
+    hotel_selezionato = np.random.choice(hotels_disponibili['hotel'])
+
+    # controllo se l'hotel è tra le preferenze dell'ospite
+    preferenze_ospite = preferences_ex[preferences_ex['guest'] == guest]
+    if hotel_selezionato in preferenze_ospite['hotel'].values:
+        ospiti_soddisfatti += 1
     
-    #calcoliamo lo sconto
-    prezzo_finale= price*(1-discount)
-    
-    #salviamo le allocazioni
+    # calcolo il prezzo con lo sconto
+    prezzo_hotel = hotel_ex[hotel_ex['hotel'] == hotel_selezionato].iloc[0]
+    price = prezzo_hotel['price']
+    prezzo_finale = price * (1 - discount)
+
+    #aggiungo ai dati su ogni allocazione
     allocazioni.append({
-        'cliente':guest,
+        'cliente': guest,
         'hotel_f': hotel_selezionato,
         'prezzo_pagato': prezzo_finale
     })
-    
-    ##dobbiamo ovviamente ridurre il numero di stanze disponibili nell'hotel
-    indice_hotel=hotel_ex[hotel_ex['hotel']==hotel_selezionato].index
-    hotel_ex.loc[indice_hotel, 'stanze_disponibili'] -=1
-    
-    ##dobbiamo aggiornare le statistiche
+
+    #aggiorno le stanze disponibili e gli hotel selezionati
+    indice_hotel = hotel_ex[hotel_ex['hotel'] == hotel_selezionato].index
+    hotel_ex.loc[indice_hotel, 'stanze_disponibili'] -= 1
+
+    #aggiorno le statistiche dopo l'allocazione
     ospiti_allocati += 1
-    stanze_occupate +=1
+    stanze_occupate += 1
     hotel_occupati.add(hotel_selezionato)
     guadagni_hotel[hotel_selezionato] += prezzo_finale
 
-##creiamo un dataframe dalle allocazionni
-allocazioni_df= pd.DataFrame(allocazioni)        
+#creo il dataframe per le allocazioni e per i guadagni totali
+allocazioni_df = pd.DataFrame(allocazioni)
+numero_hotel_occupati = len(hotel_occupati)
+guadagni_df = pd.DataFrame(list(guadagni_hotel.items()), columns=['Hotel', 'Guadagno Totale'])
 
-##calcoliamo il risultato finale
-numero_hotel_occupati= len(hotel_occupati)
+#voglio i risultati finali
 print(f'Numero di ospiti che hanno ottenuto una camera: {ospiti_allocati}')
 print(f'Numero di stanze occupate: {stanze_occupate}')
 print(f'Numero di hotel occupati: {numero_hotel_occupati}')
 print(f'Ospiti soddisfatti: {ospiti_soddisfatti}')
-
-##calcoliamo i guadagni totali
-guadagni_df= pd.DataFrame(list(guadagni_hotel.items()), columns=['Hotel', 'Guadagno Totale'])
 print('\nGuadagni totali di ogni hotel:')
 print(guadagni_df)
-
 print('\nAllocazioni degli ospiti:')
 print(allocazioni_df)
 
