@@ -76,7 +76,7 @@ print('\nAllocazioni degli ospiti:')
 print(allocazioni_df_4)
 
 labels = ['Ospiti soddisfatti', 'Ospiti non soddisfatti']
-sizes = [ospiti_soddisfatti, ospiti_allocati-ospiti_soddisfatti]
+sizes = [ospiti_soddisfatti, len(guest_ex)-ospiti_soddisfatti]
 if sizes[1] == 0:
     sizes[1] = 0.1
 colors = ['green', 'red']

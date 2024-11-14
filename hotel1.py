@@ -71,7 +71,7 @@ print('\nAllocazioni degli ospiti:')
 print(allocazioni_df)
 
 labels = ['Ospiti soddisfatti', 'Ospiti non soddisfatti']
-sizes = [ospiti_soddisfatti, 4000-ospiti_soddisfatti]
+sizes = [ospiti_soddisfatti, len(guest_ex)-ospiti_soddisfatti]
 colors = ['green', 'red']
 plt.figure(figsize=(4, 4))
 plt.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=40)
