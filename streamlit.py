@@ -6,7 +6,9 @@ from modu import carica_file, stats
 
 
 def random():
-    st.title("Allocazioni e guadagni in base al posizionamento random")
+    st.title("Random")
+    st.write("The random method has to work in this way: customers are randomly distributed to the rooms until the seats or customers are exhausted")
+    st.subheader("Final data:")
     hotel_ex, guest_ex, preferences_ex = carica_file()
     hotel_ex['stanze_disponibili'] = hotel_ex['rooms'].copy()
     guadagni_hotel = {hotel: 0 for hotel in hotel_ex['hotel']}
@@ -54,8 +56,10 @@ def random():
     st.pyplot(fig)
 
 def customer_preference():
-    st.title("Allocazione e guadagni in base alle preferenze degli ospiti")
-    
+    st.title("Customer preference")
+    st.write("The method of customer preference has to work in this way: customers are served in order of reservation (the customer number indicates the order) and are allocated to the hotel based on their preference, until the seats or customers are exhausted")
+    st.subheader("Final data:")
+    hotel_ex, guest_ex, preferences_ex = carica_file()
     hotel_ex['stanze_disponibili'] = hotel_ex['rooms'].copy()
     guadagni_hotel = {hotel: 0 for hotel in hotel_ex['hotel']}
     ospiti_allocati, stanze_occupate, hotel_occupati, ospiti_soddisfatti, allocazioni = stats()
@@ -105,7 +109,9 @@ def customer_preference():
 
 def price():
     hotel_ex, guest_ex, preferences_ex = carica_file()
-    st.title("Allocazioni e guadagni in base al prezzo")
+    st.title("Price")
+    st.write("The price method has to work in this way: places in the hotel are distributed in order of price, starting with the cheapest hotel and following in order of reservation and preference until the places or customers are exhausted")
+    st.subheader("Final data:")
     hotel_ex['stanze_disponibili']=hotel_ex['rooms'].copy()
     hotel_ex=hotel_ex.sort_values(by='price')   
     guadagni_hotel= {hotel: 0 for hotel in hotel_ex['hotel']}
@@ -157,7 +163,9 @@ def price():
 
 
 def availability():
-    st.title("Allocazioni e guadagni in base alle disponibilità")
+    st.title("Availability")
+    st.write("This method has to woork in this was: places in hotels are distributed in order of room availability, starting with the most roomy hotel and subordinately in order of reservation and preference until places or clients are exhausted")
+    st.subheader("Final data: ")
     hotel_ex, guest_ex, preferences_ex = carica_file()
     hotel_ex['stanze_disponibili']=hotel_ex['rooms'].copy()
     hotel_ex=hotel_ex.sort_values(by='stanze_disponibili', ascending=False)
@@ -208,7 +216,8 @@ def availability():
     ax.set_title('Soddisfazione degli Ospiti')
     st.pyplot(fig)
 
-metodo_selezionato = st.selectbox("Seleziona il metodo da visualizzare", ("random", "customer_preference", "price", "availability"))
+
+metodo_selezionato = st.selectbox("Select the method you want to visualize", ("random", "customer_preference", "price", "availability"))
 
 if metodo_selezionato == "random":
     random()
