@@ -216,10 +216,26 @@ def availability():
     ax.set_title('Soddisfazione degli Ospiti')
     st.pyplot(fig)
 
+def introduzione():
+    st.title("Hotels project")
+    st.write("""The program must calculate the allocation of customers at hotels, considering the number of available rooms, the fact that each customer occupies exactly one room, and that each stay lasts only one night. The price paid by the customer is the unit price of the room discounted by the fraction of the discount to which the customer is entitled.
+             There are four different methods that you can choose and each of them is based on a different parameter to allocate guests.""")
 
-metodo_selezionato = st.selectbox("Select the method you want to visualize", ("random", "customer_preference", "price", "availability"))
+def home():
+    st.subheader("Library used for the project:")
+    st.write("""- pandas
+             - numpy
+             - matplotlib""")
+    st.subheader("Edited by:")
+    st.write("Raul Spanò")
 
-if metodo_selezionato == "random":
+introduzione()
+metodo_selezionato = st.selectbox("Select the method you want to visualize", ("home", "random", "customer_preference", "price", "availability"))
+
+
+if metodo_selezionato == "home":
+    home()
+elif metodo_selezionato == "random":
     random()
 elif metodo_selezionato == "customer_preference":
     customer_preference()
