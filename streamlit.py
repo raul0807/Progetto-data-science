@@ -4,6 +4,9 @@ import matplotlib.pyplot as plt
 import streamlit as st
 from modu import carica_file, stats
 
+#in questo file riunisco tutti e 4 i file che ho creato riguardanti i metodi di allocazione
+#e lo faccio inserendli in delle funzioni in modo tale che poi su streamlit posso scegliere
+# quale delle seguenti funzioni voglio visualizzare
 
 def random():
     st.title("Random")
@@ -229,10 +232,16 @@ def home():
     st.subheader("Edited by:")
     st.write("Raul Spanò")
 
+#
+
 introduzione()
+#richiamo la funzione introduzione in modo tale che sia visualizzata come prima cosa 
+# su streamlit
 metodo_selezionato = st.selectbox("Select the method you want to visualize", ("home", "random", "customer_preference", "price", "availability"))
+#scelgo cosa ci dovrà essere nella casella per la scelta dei vari metodi
 
-
+#faccio in modo che in base al metodo scelto verrà eseguita la funzione
+#appartenente a quel metodo
 if metodo_selezionato == "home":
     home()
 elif metodo_selezionato == "random":

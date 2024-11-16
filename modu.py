@@ -1,6 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt 
 
+#creo due funzioni per poi poterle richiamare nei file senza la nacessità di scrivere tutto
+
 def carica_file():
     hotel_ex = pd.read_excel("/Users/raulspano/Desktop/progetto hotel/hotels.xlsx")
     guest_ex = pd.read_excel('/Users/raulspano/Desktop/progetto hotel/guests.xlsx')
@@ -9,8 +11,8 @@ def carica_file():
 
 
 def stats():
-    ospiti_allocati=0
-    stanze_occupate=0
+    ospiti_allocati = 0
+    stanze_occupate = 0
     hotel_occupati=set()
     ospiti_soddisfatti=0
     allocazioni=[]

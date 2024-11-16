@@ -71,11 +71,18 @@ print('\nAllocazioni degli ospiti:')
 print(allocazioni_df)
 
 labels = ['Ospiti soddisfatti', 'Ospiti non soddisfatti']
+# nomi delle due porzioni del grafico
 sizes = [ospiti_soddisfatti, len(guest_ex)-ospiti_soddisfatti]
+# quali sono i dati di cui tener conto
 colors = ['green', 'red']
+#colore delle due porzioni
 plt.figure(figsize=(4, 4))
+#grandezza figura
 plt.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=40)
+#grafico a torta
 plt.title('Soddisfazione degli Ospiti', fontsize=14)
-plt.axis('equal')  
+#titolo e grandezza
+plt.axis('equal')
+#serve per far si che sia un cerchio
 plt.show()
-##qui utilizzo un grafico per mostrare quanti ospiti sono soddisfatti rispetto a quelli che non lo sono
+#utilizzo un grafico per mostrare il grado di soddifazione degli ospiti

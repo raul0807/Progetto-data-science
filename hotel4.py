@@ -79,9 +79,17 @@ labels = ['Ospiti soddisfatti', 'Ospiti non soddisfatti']
 sizes = [ospiti_soddisfatti, len(guest_ex)-ospiti_soddisfatti]
 if sizes[1] == 0:
     sizes[1] = 0.1
+#necessito di questo condizionamento perchè altrimenti ci sarebbero problemi nel viualizzare
+# il grafico
 colors = ['green', 'red']
+# colori del grafico
 plt.figure(figsize=(4, 4))
+#grandezza del grafico
 plt.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=40)
+#grafico a torta
 plt.title('Soddisfazione degli Ospiti', fontsize=14)
-plt.axis('equal')  # Assicura che il grafico sia circolare
-plt.show()
+#titolo e granfezza di esso
+plt.axis('equal')  
+# Assicura che il grafico sia circolare
+plt.show() 
+# mostra il grafico
