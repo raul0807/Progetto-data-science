@@ -2,61 +2,70 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-## Carico i file excel necessari
+# importo i file excel necessari richiamando una funzione dal file modu.py
 from modu import carica_file
 hotel_ex, guest_ex, preferences_ex = carica_file()
 
-## creo una colonna che rappresenti le stanze disponibili
+# creo una nuova colonna 'rooms' in hotel_ex che sia uguale a quella definita come stanze disponibili
 hotel_ex['stanze_disponibili']= hotel_ex['rooms'].copy()
 
-##creo un dizionario per tracciare i guadagno per ogni hotel
+# dictionary comprehension, cioè itero su ogni elemento della lista
+# e per ogni elemento il nome diventa una chiave a cui assegno il valore 0
 guadagni_hotel= {hotel: 0 for hotel in hotel_ex['hotel']}
 
+# importo le variabili sempre da modu
 from modu import stats
 ospiti_allocati, stanze_occupate, hotel_occupati, ospiti_soddisfatti, allocazioni = stats()
 
-## loop sugli ospiti ordinati dal primo all'ultimo
+# itero su ogni riga saltando la prima che ha i titoli delle colonne (iterrows è utilizzabile grazie alla libreria pandas)
+# in questo caso grazie a _, salto la prima riga che nel file sono gli indici
 for _, guest_row in guest_ex.iterrows():
-    ##iterrows serve per iterare su ogni riga in questo caso l'indice è _ e la riga è guest_row
+    
+    #estraggo per ogni riga il nome e lo sconto associati
     guest=guest_row['guest']
     discount=guest_row['discount']
     
-    ##devo tener conto delle preferenze degli ospiti
+    # faccio in modo che la variabile preferenze_ospite contenga le preferenze dell'ospite in questione
     preferenze_ospite= preferences_ex[preferences_ex['guest']==guest]
     
-    ##devo trovare stanze disponibili nelle preferenze del cliente
+    # troviamo tra gli hotel preferiti dall'ospite quelli che hanno almeno una stanza disponibile e .isin verifica proprio ciascun elemento di una colonna
+    # per trovare quelli che soddisfano la richiesta
     hotels_preferiti= preferenze_ospite[preferenze_ospite['hotel'].isin(hotel_ex[hotel_ex['stanze_disponibili']>0]['hotel'])]
-    ## isin appunto serve per verificare se ciascun elemento di una colonna o di un DataFrame è presente in una lista di valori specificati
-    ## in questo caso infatti stiamo cercando tra le preferenze del cliente un hotel che abbia almeno una stanza disponibile
     
+    # se ci sono hotel disponibili tra quelli preferiti dal cliente
     if not hotels_preferiti.empty:
-        ##se ci sono preferenze disponibili selezioniamo il primo hotel preferito cond disponibilità
+        
+        # selezioniamo il primo hotel preferito con disponibilità e poi aggiungo 1 al numero degli ospiti soddisfatti
         hotel_selezionato= hotels_preferiti.iloc[0]['hotel']
-        ospiti_soddisfatti += 1 ##così aggiungo un ospite a quelli soddisfatti   
+        ospiti_soddisfatti += 1   
     else:
-        ##se non ci sono preferenze valide saltiamo l'ospite e non lo allochiamo
+        # se non ci sono preferenze valide saltiamo l'ospite e non lo allochiamo
         continue
     
     
-    ##devo prendere il prezzo dell'hotel selezionato
-    ## iloc mi serve per accedere a righe e colonne in base alla posizione numerica (intger location) 
-    ## in questo caso usiamo l'indice zero percchè ci serve il prezzo dell'hotel selezionato appunto
+    # definisco il prezzo dell'hotel grazie ad .iloc che seleziona solo la prima riga
+    # ottenuta dal filtraggio degli hotel
     prezzo_hotel=hotel_ex[hotel_ex['hotel']==hotel_selezionato].iloc[0]
+    
+    # definisco la variabli price
     price=prezzo_hotel['price']
     
-    ##calcolo lo sconto
+    # calcolo lo sconto
     prezzo_finale= price*(1-discount)
     
-    ##considero sempre le allocazioni
+    # aggiungo all'insieme delle allocazioni nuovi elementi che sono delle chiavi con dei valori assegnati
     allocazioni.append({
         'cliente': guest,
         'hotel_f':hotel_selezionato,
         'prezzo_pagato':prezzo_finale
         })
-    ##riduco il numero di stanze disponibili
+    
+    # ottengo l'indice dell'hotel che soddisfa le condizioni indicate grazie a .index
     indice_hotel=hotel_ex[hotel_ex['hotel']==hotel_selezionato].index
+    
+    # riduco il numero di stanze disponibili, loc invece serve per avere un risultato
+    # in base ai nomi di righe e colonne invece che l'indice numerico come fa iloc
     hotel_ex.loc[indice_hotel, 'stanze_disponibili']-=1 
-    ## loc invece serve per avere un risultato in base ai nomi di righe e colonne invece che l'indice numerico come fa iloc
     
     ##aggiorno le statistiche
     ospiti_allocati += 1
