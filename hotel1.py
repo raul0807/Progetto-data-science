@@ -1,3 +1,4 @@
+# importo tutte le librerie necessarie
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -17,8 +18,7 @@ guadagni_hotel = {hotel: 0 for hotel in hotel_ex['hotel']}
 from modu import stats
 ospiti_allocati, stanze_occupate, hotel_occupati, ospiti_soddisfatti, allocazioni = stats()
 
-# itero su ogni riga saltando la prima che ha i titoli delle colonne (iterrows è utilizzabile grazie alla libreria pandas)
-# in questo caso grazie a _, salto la prima riga che nel file sono gli indici
+# itero su ogni riga ignorando l'indice (iterrows è utilizzabile grazie alla libreria pandas)
 for _, guest_row in guest_ex.iterrows():
     
     # estraggo per ogni riga il nome e lo sconto associati
@@ -28,8 +28,7 @@ for _, guest_row in guest_ex.iterrows():
     # filtro gli hotel per ottenere quelli che hanno almeno una stanza disponibile
     hotels_disponibili = hotel_ex[hotel_ex['stanze_disponibili'] > 0]
     
-    # nel caso in cui il filtraggio di prima non ci dia più nessun hotel disponibile 
-    # il codice mi deve restituire la frase sotto e poi continuare con le operazioni del loop
+    # nel caso in cui il filtraggio di prima non ci dia più nessun hotel disponibile interrompo stampando la frase
     if hotels_disponibili.empty:
         print('Non ci sono hotel disponibili')
         continue
@@ -37,24 +36,27 @@ for _, guest_row in guest_ex.iterrows():
     # faccio in modo che la scelta tra gli hotel disponibili sia casuale
     hotel_selezionato = np.random.choice(hotels_disponibili['hotel'])
 
-    # faccio in modo che la variabile preferenze_ospite contenga le preferenze dell'ospite in questione
+    # filtro preferences ex in modo tale che mi dia solo la riga in cui il valore della colonna guest
+    # sia uguale alla variabile guest
     preferenze_ospite = preferences_ex[preferences_ex['guest'] == guest]
     
-    # se l'hotel che è stato selezionato randomicamente rientra tra le preferenze auentiamo il numero di ospiti soddisfatti
+    # se l'hotel che è stato selezionato randomicamente rientra tra le preferenze dell'ospite
+    # allora aumentiamo gli ospiti soddisfatti di 1
     if hotel_selezionato in preferenze_ospite['hotel'].values:
         ospiti_soddisfatti += 1
     
-    # prendo dal file (hotel_ex) la prima riga (iloc[0]) corrispondendte all'hotel selezionato
+    # seleziono tutte le righe della colonna hotel che sono uguali a hotel selezionato 
+    # e mi restituisce la prima (.iloc[0])
     prezzo_hotel = hotel_ex[hotel_ex['hotel'] == hotel_selezionato].iloc[0]
     
-    # creo la variabile price
+    # creo la variabile price che corrisponde al prezzo dell'hotel
     price = prezzo_hotel['price']
     
     # calcolo il prezzo con lo sconto
     prezzo_finale = price * (1 - discount)
 
-    # aggiungo alla lista allocazioni nuovi elementi che sono dei dizionari che rappresentano
-    # un'allocazione di un ospite ad un hotel e il prezzo pagato
+    # aggiungo ogni volta un nuovo elemento alla lista allocazioni
+    # il nuovo elemento è un dizionario che contiene le informazioni: cliente, hotel e prezzo
     allocazioni.append({
         'cliente': guest,
         'hotel_f': hotel_selezionato,

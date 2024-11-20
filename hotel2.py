@@ -1,3 +1,4 @@
+# importo le librerie necessarie
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -17,11 +18,10 @@ guadagni_hotel= {hotel: 0 for hotel in hotel_ex['hotel']}
 from modu import stats
 ospiti_allocati, stanze_occupate, hotel_occupati, ospiti_soddisfatti, allocazioni = stats()
 
-# itero su ogni riga saltando la prima che ha i titoli delle colonne (iterrows è utilizzabile grazie alla libreria pandas)
-# in questo caso grazie a _, salto la prima riga che nel file sono gli indici
+# itero su ogni riga saltando ignorando l'indicie (_,) (iterrows è utilizzabile grazie alla libreria pandas)
 for _, guest_row in guest_ex.iterrows():
     
-    #estraggo per ogni riga il nome e lo sconto associati
+    # estraggo per ogni riga il nome e lo sconto associati
     guest=guest_row['guest']
     discount=guest_row['discount']
     
@@ -53,7 +53,8 @@ for _, guest_row in guest_ex.iterrows():
     # calcolo lo sconto
     prezzo_finale= price*(1-discount)
     
-    # aggiungo all'insieme delle allocazioni nuovi elementi che sono delle chiavi con dei valori assegnati
+    # aggiungo ogni volta un nuovo elemento alla lista allocazioni
+    # il nuovo elemento è un dizionario che contiene le informazioni: cliente, hotel e prezzo
     allocazioni.append({
         'cliente': guest,
         'hotel_f':hotel_selezionato,
@@ -63,45 +64,55 @@ for _, guest_row in guest_ex.iterrows():
     # ottengo l'indice dell'hotel che soddisfa le condizioni indicate grazie a .index
     indice_hotel=hotel_ex[hotel_ex['hotel']==hotel_selezionato].index
     
-    # riduco il numero di stanze disponibili, loc invece serve per avere un risultato
-    # in base ai nomi di righe e colonne invece che l'indice numerico come fa iloc
+    # riduco il numero di stanze disponibili dell'hotel selezionato
+    # loc serve per avere un risultato in base ai nomi di righe e colonne invece che l'indice numerico come fa iloc
     hotel_ex.loc[indice_hotel, 'stanze_disponibili']-=1 
     
-    ##aggiorno le statistiche
+    # aggiorno le statistiche
     ospiti_allocati += 1
     stanze_occupate += 1
+    # aggiungo all'insieme degli hotel occupati l'hotel selezionato
     hotel_occupati.add(hotel_selezionato)
+    # aumento i guadagni di ogni singolo hotel in base a quello che viene selezionato di volta in volta
     guadagni_hotel[hotel_selezionato] += prezzo_finale
     
-    ##se tutti gli hotel sono pieni interrompo l'allocazione
+    # se tutti gli hotel sono pieni interrompo l'iterazione stampo il messaggio che voglio
     if hotel_ex['stanze_disponibili'].sum() == 0:
         print('Tutte le stanze sono occupate.')
         break
 
-##infine creo un dataframe dalle allocazioni
+# creo un dataframe per allocazioni e per i guadagni
+# quello dei guadagi sarà una tabella in cui verranno rappresentati gli hotel e i loro rispettivi guadagni
 allocazioni_df_2=pd.DataFrame(allocazioni)
+guadagni_df_2= pd.DataFrame(list(guadagni_hotel.items()), columns=['Hotel', 'Guadagno totale'])
 
-##risultato finale
+# voglio un numero per gli hotel occupati
 numero_hotel_occupati= len(hotel_occupati)
+
+# f serve per poter inserire le variabili all'interno di una stringa
 print(f'Numero di ospiti che hanno ottenuto una camera: {ospiti_allocati}')
 print(f'Numero di stanze occupate: {stanze_occupate}')
 print(f'Numero di hotel occupati: {numero_hotel_occupati}')
 print(f'Numero di ospiti soddisfatti: {ospiti_soddisfatti}')
-
-##i guadagni totali di ogni hotel
-guadagni_df_2= pd.DataFrame(list(guadagni_hotel.items()), columns=['Hotel', 'Guadagno totale'])
+# n invece è utile per creare uno spazio vuoto tra questo che voglio stampare adesso e quello che ho stampato prima
 print('\nGuadagni totali di ogni hotel:')
 print(guadagni_df_2)
-
-##allocazuoni finali
 print('\nAllocazioni degli ospiti:')
 print(allocazioni_df_2)
 
 labels = ['Ospiti soddisfatti', 'Ospiti non soddisfatti']
+# nomi delle due fette della torta
 sizes = [ospiti_soddisfatti, len(guest_ex)-ospiti_soddisfatti]
+# quantità delle due porzioni
 colors = ['green', 'red']
+# colori delle due porzioni
 plt.figure(figsize=(4, 4))
+# misura della figura
 plt.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=40)
+# grafico a torta, dati in percentuali decimali
 plt.title('Soddisfazione degli Ospiti', fontsize=14)
-plt.axis('equal')  
+# titolo e grandezza
+plt.axis('equal')
+# deve essere circolare la torta
 plt.show()
+# comando per avere la figura
