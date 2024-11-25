@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from modu import carica_file
 hotel_ex, guest_ex, preferences_ex = carica_file()
 
-# creo una nuova colonna (rooms) in quel file e la faccio uguale a quella delle stanze disponibili
+# creo una nuova colonna in quel file e la faccio uguale a rooms
 hotel_ex['stanze_disponibili']=hotel_ex['rooms'].copy()
 
 # ordino gli hotel in base al prezzo crescente

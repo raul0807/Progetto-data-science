@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from modu import carica_file
 hotel_ex, guest_ex, preferences_ex = carica_file()
 
-# creo una nuova colonna 'rooms' in hotel_ex che sia uguale a quella definita come stanze disponibili
+# creo una nuova colonna in hotel_ex che sia uguale a quella definita come rooms
 hotel_ex['stanze_disponibili']= hotel_ex['rooms'].copy()
 
 # dictionary comprehension, cioè itero su ogni elemento della lista
